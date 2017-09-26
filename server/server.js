@@ -9,6 +9,7 @@ const socketIO = require('socket.io');
 // models
 
 // variables
+const {generateMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
@@ -28,8 +29,14 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log('new user connected');
 
-  socket.on('createMessage', (message) => {
-    io.emit('newMessage', {from: 'mike.com', text: 'Heil', createdAt: new Date().getTime()});
+  socket.emit('newMessage', generateMessage('Admin','Welcome to chat'));
+
+  // send event to all sockets except this socket
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
+
+  socket.on('createMessage', (message, callback) => {
+    io.emit('newMessage', generateMessage(message.from, message.text));
+    callback('This is from the server');
   });
 
   socket.on('disconnect', () => {
