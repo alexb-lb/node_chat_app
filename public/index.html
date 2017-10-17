@@ -2,54 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Chat app</title>
+  <title>Join | Chat app</title>
+  <meta name="viewport" content="width=device-width, inital-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
-<h1>Welcome to the chat app</h1>
-
-<ol id="messages">
-
-</ol>
-
-<form id="message-from">
-  <input name="message" type="text" placeholder="Message">
-  <button>Send</button>
-</form>
-
-<button id="geolocation">Send location</button>
-
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous">
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-<script src="/js/index.js"></script>
-<script type="module">
-  const makeRequest = async () => {
-
-    const value1 = await new Promise((res, rej) => {
-      setTimeout(() => res('1st timer'), 500)
-    });
-
-    const value2 = await new Promise((res, rej) => {
-      setTimeout(() => res('2nd timer'), 1000)
-    });
-
-
-    const result = function (arg1, arg2){
-
-      return new Promise((res, rej) => {
-        setTimeout(() => res(`Execution done: ${arg1}, ${arg2}`), 500)
-      })
-    }
-
-    return result(value1, value2);
-//    console.log(value1, value2)
-  }
-
-  makeRequest().then((result) => {
-    console.log('Result is ' + result);
-  });
-</script>
+<body class="centered-form">
+<div class="centered-form__form">
+  <form action="/chat.html">
+    <div class="form-field">
+      <h3>Join a Chat</h3>
+    </div>
+    <div class="form-field">
+      <label>Display name</label>
+      <input type="text" name="name" autofocus>
+    </div>
+    <div class="form-field">
+      <label>Room name</label>
+      <input type="text" name="room">
+    </div>
+    <div class="form-field">
+      <button>Join</button>
+    </div>
+  </form>
+</div>
 </body>
 </html>

@@ -10,6 +10,8 @@ const socketIO = require('socket.io');
 
 // variables
 const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
+
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
@@ -27,12 +29,22 @@ app.get('/', (req, res) => {
 
 // Websockets
 io.on('connection', (socket) => {
-  console.log('new user connected');
+  socket.on('join', (params, callback) => {
+    if(!isRealString(params.name) || !isRealString(params.room)){
+      callback('Пожалуйста, введите ваше имя и название комнаты');
+    }
 
-  socket.emit('newMessage', generateMessage('Admin','Welcome to chat'));
+    // built-in socket features to join rooms
+    socket.join(params.room);
+    // socket.leave('The Office Fans');
 
-  // send event to all sockets except this socket
-  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
+    socket.emit('newMessage', generateMessage('Admin',`Добро пожаловать в чат "${params.room}"`));
+
+    // send message to all users in this room except new connected user
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} присоединился`));
+
+    callback();
+  });
 
   socket.on('createMessage', (message, callback) => {
     io.emit('newMessage', generateMessage(message.from, message.text));
@@ -44,7 +56,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('user was disconnected');
+    console.log('Юзер покинул комнату');
   })
 });
 
