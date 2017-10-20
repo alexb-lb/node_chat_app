@@ -32,6 +32,19 @@ socket.on('connect', function () {
   });
 });
 
+
+socket.on('updateUserList', function (users) {
+  var $ol = $('<ol></ol>');
+
+  users.forEach(function (user){
+    $ol.append('<li>'+ user +'</li>');
+  });
+
+  $('#users').html($ol);
+});
+
+
+
 socket.on('newMessage', function (message) {
   let $template = $('#message-template').html();
   let formattedTime = moment(message.createdAt).format('H:mm');
@@ -63,9 +76,9 @@ $('#message-from').on('submit', function (e) {
   e.preventDefault();
 
   let $messageTextBox = $('[name=message]');
+  let params = $.deparam(window.location.search);
 
   socket.emit('createMessage', {
-    from: 'User',
     text: $messageTextBox.val()
   }, function (data) {
     $messageTextBox.val('');
@@ -91,4 +104,4 @@ $location.on('click', function () {
     $location.removeAttr('disabled').text('Send location');
     alert('Unable to fetch location');
   })
-})
+});
